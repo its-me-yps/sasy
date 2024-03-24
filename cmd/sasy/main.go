@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -9,6 +10,14 @@ import (
 
 func main() {
 	args := os.Args[1:]
+
+	// If no args are provided
+	if len(args) == 0 {
+		// TODO: To display help section when no args provided
+		fmt.Printf("sasy: no args provided")
+		os.Exit(0)
+	}
+
 	command := args[0]
 	switch command {
 	case "init":

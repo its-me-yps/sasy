@@ -1,21 +1,25 @@
 package git
 
 import (
+	"crypto/sha1"
 	"fmt"
+	"io"
 	"os"
+	"path"
+
+	"github.com/sayymeer/sasy/utils"
 )
 
 func CommitHandler() error {
-	wd, err := os.Getwd()
-	if err != nil {
-		return err
-	}
-	// vcPath := path.Join(wd, ".sasy")
-	// dbPath := path.Join(vcPath, "objects")
-	dir, _ := os.Open(wd)
-	files, _ := dir.Readdir(0)
+	files, _ := utils.Ls()
+	wd, _ := os.Getwd()
 	for _, file := range files {
-		fmt.Println(file.Name())
+		filePath := path.Join(wd, file)
+		byteContent, _ := os.ReadFile(filePath)
+		content := fmt.Sprintf("%s %d/0%s", "blob", len(byteContent), string(byteContent))
+		h := sha1.New()
+		io.WriteString(h, content)
+		fmt.Printf("%x\n", h.Sum(nil))
 	}
 	return nil
 }
