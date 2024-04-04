@@ -1,8 +1,8 @@
 package git
 
 import (
+	"fmt"
 	"os"
-	"path"
 
 	"github.com/sayymeer/sasy/utils"
 )
@@ -14,12 +14,20 @@ func CommitHandler() error {
 	if err != nil {
 		return err
 	}
+
+	blobEntries := []*Blob{}
 	for _, file := range files {
-		filePath := path.Join(wd, file)
-		blob := CreateObject(filePath, "blob")
-		if err := database.SaveObject(blob); err != nil {
+		blob := CreateBlob(wd, file)
+		if err := database.Save(blob.Oid, []byte(blob.Content)); err != nil {
 			return err
 		}
+		blobEntries = append(blobEntries, blob)
 	}
+
+	tree := CreateTree(&blobEntries)
+	if err := database.Save(tree.Oid, []byte(tree.Content)); err != nil {
+		return err
+	}
+	fmt.Println("Commited Successfully")
 	return nil
 }
