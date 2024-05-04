@@ -1,4 +1,4 @@
-package sasy 
+package model
 
 import (
 	"crypto/sha1"

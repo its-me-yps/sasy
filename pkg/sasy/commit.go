@@ -1,23 +1,24 @@
-package sasy 
+package sasy
 
 import (
 	"fmt"
 	"os"
 
+	"sasy/pkg/model"
 	"sasy/utils"
 )
 
 func CommitHandler() error {
 	files, _ := utils.Ls()
 	wd, _ := os.Getwd()
-	database, err := CreateDatabase(wd)
+	database, err := model.CreateDatabase(wd)
 	if err != nil {
 		return err
 	}
 
-	blobEntries := []*Blob{}
+	blobEntries := []*model.Blob{}
 	for _, file := range files {
-		blob := CreateBlob(wd, file)
+		blob := model.CreateBlob(wd, file)
 
 		if err := database.Save(blob.Oid, []byte(blob.Content)); err != nil {
 			return err
@@ -25,7 +26,7 @@ func CommitHandler() error {
 		blobEntries = append(blobEntries, blob)
 	}
 
-	tree := CreateTree(&blobEntries)
+	tree := model.CreateTree(&blobEntries)
 	if err := database.Save(tree.Oid, []byte(tree.Content)); err != nil {
 		return err
 	}

@@ -1,10 +1,9 @@
-package sasy 
+package model
 
 import (
-	"bytes"
-	"compress/zlib"
 	"os"
 	"path"
+	"sasy/utils"
 )
 
 type Database struct {
@@ -25,16 +24,8 @@ func (d *Database) Save(oid string, content []byte) error {
 	if err := os.Mkdir(subDir, os.ModePerm); err != nil {
 		return err
 	}
-	if err := os.WriteFile(fileName, compress(content), 0644); err != nil {
+	if err := os.WriteFile(fileName, utils.Compress(content), 0644); err != nil {
 		return err
 	}
 	return nil
-}
-
-func compress(content []byte) []byte {
-	var b bytes.Buffer
-	w := zlib.NewWriter(&b)
-	w.Write(content)
-	w.Close()
-	return b.Bytes()
 }
