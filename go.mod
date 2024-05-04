@@ -1,3 +1,3 @@
-module github.com/sayymeer/sasy
+module sasy
 
 go 1.22.0

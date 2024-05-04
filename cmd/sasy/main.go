@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/sayymeer/sasy/pkg/git"
+  "sasy/pkg/sasy"
 )
 
 func main() {
@@ -21,9 +21,9 @@ func main() {
 	command := args[0]
 	switch command {
 	case "init":
-		git.InitHandler()
+		sasy.InitHandler()
 	case "commit":
-		git.CommitHandler()
+		sasy.CommitHandler()
 	default:
 		log.Printf("sasy: %s is not a valid command\n", command)
 		os.Exit(1)

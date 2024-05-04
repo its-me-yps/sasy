@@ -1,10 +1,10 @@
-package git
+package sasy 
 
 import (
 	"fmt"
 	"os"
 
-	"github.com/sayymeer/sasy/utils"
+	"sasy/utils"
 )
 
 func CommitHandler() error {
@@ -18,6 +18,7 @@ func CommitHandler() error {
 	blobEntries := []*Blob{}
 	for _, file := range files {
 		blob := CreateBlob(wd, file)
+
 		if err := database.Save(blob.Oid, []byte(blob.Content)); err != nil {
 			return err
 		}

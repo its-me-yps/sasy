@@ -1,4 +1,4 @@
-package git
+package sasy 
 
 import (
 	"bytes"
@@ -15,7 +15,7 @@ type Database struct {
 func CreateDatabase(workdir string) (*Database, error) {
 	d := &Database{}
 	d.workingDir = workdir
-	d.objectsDir = path.Join(d.workingDir, ".sasy", "objects")
+	d.objectsDir = path.Join(d.workingDir, ".git", "objects")
 	return d, nil
 }
 

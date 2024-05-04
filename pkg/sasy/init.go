@@ -1,4 +1,4 @@
-package git
+package sasy 
 
 import (
 	"fmt"
@@ -11,7 +11,7 @@ func InitHandler() error {
 	if err != nil {
 		return err
 	}
-	gitPath := path.Join(wd, ".sasy")
+	gitPath := path.Join(wd, ".git")
 
 	if err := os.Mkdir(gitPath, os.ModePerm); err != nil {
 		return err
