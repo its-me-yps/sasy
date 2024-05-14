@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"io"
+	"os"
 	"sort"
 )
 
@@ -31,7 +32,20 @@ func (t *Tree) sortBlobs() {
 func (t *Tree) setContent() {
 	t.sortBlobs()
 	for _, b := range t.blobs {
-		t.Content += fmt.Sprintf("%d %s %s\x00", 100644, b.Name, b.Oid)
+		info, err := os.Stat(b.Path)
+		if err != nil {
+			fmt.Printf("Error in reading Stats of file %s: %v\n", b.Path, err)
+		}
+		var mode string
+		if info.Mode()&0100 != 0 {
+			mode = "100755"
+		} else {
+			mode = "100644"
+		}
+    // Decoding 40 hex character long b.Oid to []byte of lenght 20
+		byteSlice, _ := hex.DecodeString(b.Oid)
+
+		t.Content += fmt.Sprintf("%s %s\x00%s", mode, b.Name, string(byteSlice)) 
 	}
 	t.Content = fmt.Sprintf("%s %d\x00%s", "tree", len(t.Content), t.Content)
 }
