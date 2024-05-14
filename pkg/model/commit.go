@@ -8,18 +8,17 @@ import (
 )
 
 type Commit struct {
-	// Oid of tree that commit points to
-	TreeId string
-	// Oid of the commit
-	Oid     string
+	Parent  string // Oid of parent commit
+	TreeId  string // Oid of tree that commit points to
+	Oid     string // Oid of the commit
 	Author  Author
 	Message string
-	// content to be stored
-	Content string
+	Content string // content to be stored
 }
 
-func CreateCommit(treeOid string, a Author, m string) *Commit {
+func CreateCommit(parent string, treeOid string, a Author, m string) *Commit {
 	c := &Commit{}
+  c.Parent = parent
 	c.TreeId = treeOid
 	c.Author = a
 	c.Message = m
@@ -30,7 +29,12 @@ func CreateCommit(treeOid string, a Author, m string) *Commit {
 
 // content of commit blob that is to be stored in database
 func (c *Commit) setContent() {
-	c.Content = fmt.Sprintf("tree %s\nauthor %s\ncommitter %s\n\n%s", c.TreeId, c.Author.toStr(), c.Author.toStr(), c.Message)
+  var s string
+  if c.Parent != "" {
+    s = fmt.Sprintf("parent %s\n", c.Parent)
+  }
+  
+	c.Content = fmt.Sprintf("tree %s\n%sauthor %s\ncommitter %s\n\n%s", c.TreeId, s, c.Author.toStr(), c.Author.toStr(), c.Message)
 }
 
 func (c *Commit) setOid() {
