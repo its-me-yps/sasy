@@ -2,10 +2,11 @@ package utils
 
 import "os"
 
-func Ls() ([]string, error) {
+// Returns the list of files and working directory if no error occured
+func Ls() ([]string, string, error) {
 	wd, err := os.Getwd()
 	if err != nil {
-		return nil, err
+		return nil, wd, err
 	}
 	dir, _ := os.Open(wd)
 	files, _ := dir.ReadDir(0)
@@ -15,5 +16,5 @@ func Ls() ([]string, error) {
 			list = append(list, file.Name())
 		}
 	}
-	return list, nil
+	return list, wd, nil
 }
