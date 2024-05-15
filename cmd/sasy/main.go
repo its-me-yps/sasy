@@ -2,10 +2,9 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
 
-  "sasy/pkg/sasy"
+	"sasy/pkg/sasy"
 )
 
 func main() {
@@ -14,19 +13,20 @@ func main() {
 	// If no args are provided
 	if len(args) == 0 {
 		// TODO: To display help section when no args provided
-		fmt.Printf("sasy: no args provided\n")
-		os.Exit(0)
-	}
-
-	command := args[0]
-	switch command {
-	case "init":
-		sasy.InitHandler()
-	case "commit":
-		sasy.CommitHandler()
-	default:
-		log.Printf("sasy: %s is not a valid command\n", command)
+		fmt.Println("sasy: no commands provided")
+		fmt.Println(sasy.Usage())
 		os.Exit(1)
 	}
 
+	cmd, ok := sasy.Commands[args[0]]
+	if !ok {
+		fmt.Println("sasy: not a valid command")
+		fmt.Println(sasy.Usage())
+		os.Exit(1)
+	}
+
+	if err := cmd(args[1:]); err != nil {
+		fmt.Fprintf(os.Stderr, "%s\n", err.Error())
+		os.Exit(1)
+	}
 }
