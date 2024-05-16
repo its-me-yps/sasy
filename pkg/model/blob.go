@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"sasy/utils"
 )
 
 type Blob struct {
@@ -18,6 +19,7 @@ func CreateBlob(wd string, name string) *Blob {
 	o.Name = name
 	o.Path = path.Join(wd, name)
 	o.setContent()
+	o.Oid = utils.CalculateSHA1(o.Content)
 	return o
 }
 
@@ -27,8 +29,4 @@ func (o *Blob) setContent() {
 		fmt.Print("Error Occured while reading", o.Path, err)
 	}
 	o.Content = fmt.Sprintf("%s %d\x00%s", "blob", len(content), string(content))
-}
-
-func (o *Blob) GetContent() string {
-	return o.Content
 }

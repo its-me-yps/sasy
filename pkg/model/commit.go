@@ -2,6 +2,7 @@ package model
 
 import (
 	"fmt"
+	"sasy/utils"
 )
 
 type Commit struct {
@@ -20,6 +21,7 @@ func CreateCommit(parent string, treeOid string, a Author, m string) *Commit {
 	c.Author = a
 	c.Message = m
 	c.setContent()
+	c.Oid = utils.CalculateSHA1(c.Content)
 	return c
 }
 
@@ -31,8 +33,4 @@ func (c *Commit) setContent() {
 	}
 
 	c.Content = fmt.Sprintf("tree %s\n%sauthor %s\ncommitter %s\n\n%s", c.TreeId, s, c.Author.toStr(), c.Author.toStr(), c.Message)
-}
-
-func (c *Commit) GetContent() string {
-	return c.Content
 }

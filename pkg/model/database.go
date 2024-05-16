@@ -1,17 +1,10 @@
 package model
 
 import (
-	"crypto/sha1"
-	"encoding/hex"
-	"io"
 	"os"
 	"path"
 	"sasy/utils"
 )
-
-type DatabaseObject interface {
-	GetContent() string
-}
 
 type Database struct {
 	workingDir string
@@ -25,8 +18,7 @@ func CreateDatabase(workdir string) (*Database, error) {
 	return d, nil
 }
 
-func (d *Database) Save(obj DatabaseObject) error {
-	oid := getOid(obj)
+func (d *Database) Save(oid string, content []byte) error {
 	subDir := path.Join(d.objectsDir, oid[:2])
 	fileName := path.Join(subDir, oid[2:])
 
@@ -38,14 +30,8 @@ func (d *Database) Save(obj DatabaseObject) error {
 	if err := os.Mkdir(subDir, os.ModePerm); err != nil {
 		return err
 	}
-	if err := os.WriteFile(fileName, utils.Compress([]byte(obj.GetContent())), 0644); err != nil {
+	if err := os.WriteFile(fileName, utils.Compress(content), 0644); err != nil {
 		return err
 	}
 	return nil
-}
-
-func getOid(d DatabaseObject) string {
-	h := sha1.New()
-	io.WriteString(h, d.GetContent())
-	return hex.EncodeToString(h.Sum(nil))
 }

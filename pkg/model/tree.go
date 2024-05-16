@@ -4,6 +4,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"os"
+	"sasy/utils"
 	"sort"
 )
 
@@ -17,6 +18,7 @@ func CreateTree(blobs *([]*Blob)) *Tree {
 	t := &Tree{}
 	t.blobs = *blobs
 	t.setContent()
+	t.Oid = utils.CalculateSHA1(t.Content)
 	return t
 }
 
@@ -45,8 +47,4 @@ func (t *Tree) setContent() {
 		t.Content += fmt.Sprintf("%s %s\x00%s", mode, b.Name, string(byteSlice))
 	}
 	t.Content = fmt.Sprintf("%s %d\x00%s", "tree", len(t.Content), t.Content)
-}
-
-func (t *Tree) GetContent() string {
-	return t.Content
 }
