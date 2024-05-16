@@ -18,6 +18,7 @@ rm:
 	@rm main;
 
 build:
-	@rm -rf .sast;\
-	go build cmd/sasy/main.go;\
+	@rm -rf .sasy;\
+	go build -o bin/sasy cmd/sasy/main.go;
+
 

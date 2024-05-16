@@ -3,6 +3,7 @@ package model
 import (
 	"fmt"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -13,7 +14,9 @@ type Author struct {
 }
 
 func (a *Author) toStr() string {
-	authorStr := fmt.Sprintf("%s %s %s", a.Name, a.Email, a.T.String())
+	unixSecond := fmt.Sprint(a.T.Unix())
+	offset := strings.Split(a.T.String(), " ")[2]
+	authorStr := fmt.Sprintf("%s <%s> %s %s", a.Name, a.Email, unixSecond, offset)
 	return authorStr
 }
 

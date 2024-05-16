@@ -1,10 +1,7 @@
 package model
 
 import (
-	"crypto/sha1"
-	"encoding/hex"
 	"fmt"
-	"io"
 	"os"
 	"path"
 )
@@ -21,7 +18,6 @@ func CreateBlob(wd string, name string) *Blob {
 	o.Name = name
 	o.Path = path.Join(wd, name)
 	o.setContent()
-	o.setOid()
 	return o
 }
 
@@ -33,8 +29,6 @@ func (o *Blob) setContent() {
 	o.Content = fmt.Sprintf("%s %d\x00%s", "blob", len(content), string(content))
 }
 
-func (o *Blob) setOid() {
-	h := sha1.New()
-	io.WriteString(h, o.Content)
-	o.Oid = hex.EncodeToString(h.Sum(nil))
+func (o *Blob) GetContent() string {
+	return o.Content
 }

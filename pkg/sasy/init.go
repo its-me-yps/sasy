@@ -29,6 +29,6 @@ func InitHandler(args []string) error {
 		return fmt.Errorf("error in creating HEAD: %v", err)
 	}
 
-	fmt.Printf("Initialized empty sasy repository in %s\n", sasyPath)
+	fmt.Printf("Initialized empty Sasy repository in %s\n", sasyPath)
 	return nil
 }

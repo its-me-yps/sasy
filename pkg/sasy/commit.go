@@ -34,7 +34,7 @@ func CommitHandler(args []string) error {
 	}
 
 	tree := model.CreateTree(&blobEntries)
-	if err := database.Save(tree.Oid, []byte(tree.Content)); err != nil {
+	if err := database.Save(tree); err != nil {
 		return fmt.Errorf("error saving tree %s in db: %v", tree.Oid, err)
 	}
 
@@ -49,7 +49,10 @@ func CommitHandler(args []string) error {
 	}
 
 	commit := model.CreateCommit(parent, tree.Oid, *author, commitMessage)
-	database.Save(commit.Oid, []byte(commit.Content))
+
+	if err := database.Save(commit); err != nil {
+		return fmt.Errorf("error saving commit %v", err)
+	}
 	// TODO: Implement LockFile to safely update HEAD in race condition
 	if err := refs.UpdateHead(commit.Oid); err != nil {
 		return fmt.Errorf("error in updating HEAD: %v", err)
@@ -77,7 +80,7 @@ func saveBlobsToDatabase(blobEntries *[]*model.Blob, database *model.Database) e
 	for _, file := range files {
 		blob := model.CreateBlob(wd, file)
 
-		if err := database.Save(blob.Oid, []byte(blob.Content)); err != nil {
+		if err := database.Save(blob); err != nil {
 			return fmt.Errorf("error saving blob %s in db: %v", blob.Name, err)
 		}
 		*blobEntries = append(*blobEntries, blob)
