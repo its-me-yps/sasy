@@ -13,7 +13,7 @@ import (
 func CommitHandler(args []string) error {
 
 	// Parsing commit message from command line args
-	fs := flag.NewFlagSet("Commit", flag.ExitOnError)
+	fs := flag.NewFlagSet("commit", flag.ExitOnError)
 	commitMessage := ""
 	fs.StringVar(&commitMessage, "message", "", "commit message")
 	fs.StringVar(&commitMessage, "m", "", "commit message")
@@ -75,7 +75,7 @@ func saveBlobsToDatabase(blobEntries *[]*model.Blob, database *model.Database) e
 	var wd string
 	var err error
 	if files, wd, err = utils.Ls(); err != nil {
-		return fmt.Errorf("error reading files in db: %v", err)
+		return fmt.Errorf("error reading files in directory: %v", err)
 	}
 	for _, file := range files {
 		blob := model.CreateBlob(wd, file)

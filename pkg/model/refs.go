@@ -10,7 +10,7 @@ type Refs struct {
 }
 
 func (r *Refs) UpdateHead(Oid string) error {
-	err := os.WriteFile(path.Join(r.Path, "HEAD"), []byte(Oid), os.ModePerm)
+	err := os.WriteFile(path.Join(r.Path, "HEAD"), []byte(Oid), 0644)
 	if err != nil {
 		return err
 	}
@@ -22,7 +22,7 @@ func (r *Refs) ReadHead() (string, error) {
 	parent := ""
 	data, err := os.ReadFile(headPath)
 	if err != nil {
-		if err := os.WriteFile(headPath, []byte(parent), os.ModeDevice); err != nil {
+		if err := os.WriteFile(headPath, []byte(parent), 0664); err != nil {
 			return parent, err
 		}
 	}

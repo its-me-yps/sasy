@@ -6,22 +6,26 @@ import (
 	"crypto/sha1"
 	"encoding/hex"
 	"io"
+	"io/fs"
 	"os"
+	"path/filepath"
 )
 
 // Returns the list of files and working directory if no error occured
 func Ls() ([]string, string, error) {
+	list := []string{}
 	wd, err := os.Getwd()
 	if err != nil {
-		return nil, wd, err
+		return nil, "", err
 	}
-	dir, _ := os.Open(wd)
-	files, _ := dir.ReadDir(0)
-	list := []string{}
-	for _, file := range files {
-		if !file.IsDir() {
-			list = append(list, file.Name())
+	if err := filepath.WalkDir(wd, func(path string, d fs.DirEntry, err error) error {
+		if d.IsDir() {
+			return err
 		}
+		list = append(list, path)
+		return err
+	}); err != nil {
+		return nil, wd, err
 	}
 	return list, wd, nil
 }
