@@ -27,7 +27,7 @@ func (d *Database) Save(oid string, content []byte) error {
 		return nil
 	}
 
-	if err := os.Mkdir(subDir, os.ModePerm); err != nil {
+	if err := os.MkdirAll(subDir, os.ModePerm); err != nil {
 		return err
 	}
 	if err := os.WriteFile(fileName, utils.Compress(content), 0444); err != nil {

@@ -23,11 +23,12 @@ func Ls() ([]string, error) {
 				return err
 			}
 		}
-		list = append(list, path)
+		list = append(list, relpath)
 		return err
 	}); err != nil {
 		return nil, err
 	}
+
 	return list, nil
 }
 

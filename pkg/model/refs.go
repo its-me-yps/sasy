@@ -10,8 +10,7 @@ type Refs struct {
 }
 
 func (r *Refs) UpdateHead(Oid string) error {
-	err := os.WriteFile(path.Join(r.Path, "HEAD"), []byte(Oid), 0644)
-	if err != nil {
+	if err := os.WriteFile(path.Join(r.Path, "HEAD"), []byte(Oid), 0644); err != nil {
 		return err
 	}
 	return nil

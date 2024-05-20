@@ -21,7 +21,7 @@ func InitHandler(args []string) error {
 	}
 
 	headPath := path.Join(utils.SasyPath, "HEAD")
-	if err := os.WriteFile(headPath, []byte{}, os.ModePerm); err != nil {
+	if err := os.WriteFile(headPath, []byte{}, 0664); err != nil {
 		return fmt.Errorf("error in creating HEAD: %v", err)
 	}
 
