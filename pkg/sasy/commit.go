@@ -3,8 +3,6 @@ package sasy
 import (
 	"flag"
 	"fmt"
-	"os"
-	"path"
 	"sasy/pkg/model"
 	"sasy/utils"
 	"strings"
@@ -22,8 +20,7 @@ func CommitHandler(args []string) error {
 	if len(commitMessage) == 0 {
 		return fmt.Errorf("error: empty commit message")
 	}
-	wd, _ := os.Getwd()
-	database, err := model.CreateDatabase(wd)
+	database, err := model.CreateDatabase(utils.WorkindDir)
 	if err != nil {
 		return fmt.Errorf("error in creating database: %v", err)
 	}
@@ -40,8 +37,7 @@ func CommitHandler(args []string) error {
 
 	author := model.NewAuthor()
 
-	sasyPath := path.Join(wd, ".sasy")
-	refs := model.Refs{Path: sasyPath}
+	refs := model.Refs{Path: utils.SasyPath}
 	// Reading commit id of parent from refs
 	parent, err := refs.ReadHead()
 	if err != nil {
@@ -72,13 +68,12 @@ func CommitHandler(args []string) error {
 
 func saveBlobsToDatabase(blobEntries *[]*model.Blob, database *model.Database) error {
 	var files []string
-	var wd string
 	var err error
-	if files, wd, err = utils.Ls(); err != nil {
+	if files, err = utils.Ls(); err != nil {
 		return fmt.Errorf("error reading files in directory: %v", err)
 	}
 	for _, file := range files {
-		blob := model.CreateBlob(wd, file)
+		blob := model.CreateBlob(utils.WorkindDir, file)
 
 		if err := database.Save(blob.Oid, []byte(blob.Content)); err != nil {
 			return fmt.Errorf("error saving blob %s in db: %v", blob.Name, err)

@@ -7,27 +7,28 @@ import (
 	"encoding/hex"
 	"io"
 	"io/fs"
-	"os"
 	"path/filepath"
 )
 
 // Returns the list of files and working directory if no error occured
-func Ls() ([]string, string, error) {
+func Ls() ([]string, error) {
 	list := []string{}
-	wd, err := os.Getwd()
-	if err != nil {
-		return nil, "", err
-	}
-	if err := filepath.WalkDir(wd, func(path string, d fs.DirEntry, err error) error {
+	if err := filepath.WalkDir(WorkindDir, func(path string, d fs.DirEntry, err error) error {
 		if d.IsDir() {
 			return err
+		}
+		relpath, _ := filepath.Rel(WorkindDir, path)
+		for _, entry := range IgnoreDirs {
+			if len(relpath) >= len(entry) && relpath[0:len(entry)] == entry {
+				return err
+			}
 		}
 		list = append(list, path)
 		return err
 	}); err != nil {
-		return nil, wd, err
+		return nil, err
 	}
-	return list, wd, nil
+	return list, nil
 }
 
 // To compress using zlib compression technique
