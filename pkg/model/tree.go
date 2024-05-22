@@ -1,11 +1,10 @@
 package model
 
 import (
-	"crypto/sha1"
 	"encoding/hex"
 	"fmt"
-	"io"
 	"os"
+	"sasy/utils"
 	"sort"
 )
 
@@ -19,7 +18,7 @@ func CreateTree(blobs *([]*Blob)) *Tree {
 	t := &Tree{}
 	t.blobs = *blobs
 	t.setContent()
-	t.setOid()
+	t.Oid = utils.CalculateSHA1(t.Content)
 	return t
 }
 
@@ -42,16 +41,10 @@ func (t *Tree) setContent() {
 		} else {
 			mode = "100644"
 		}
-    // Decoding 40 hex character long b.Oid to []byte of lenght 20
+		// Decoding 40 hex character long b.Oid to []byte of lenght 20
 		byteSlice, _ := hex.DecodeString(b.Oid)
 
-		t.Content += fmt.Sprintf("%s %s\x00%s", mode, b.Name, string(byteSlice)) 
+		t.Content += fmt.Sprintf("%s %s\x00%s", mode, b.Name, string(byteSlice))
 	}
 	t.Content = fmt.Sprintf("%s %d\x00%s", "tree", len(t.Content), t.Content)
-}
-
-func (t *Tree) setOid() {
-	h := sha1.New()
-	io.WriteString(h, t.Content)
-	t.Oid = hex.EncodeToString(h.Sum(nil))
 }

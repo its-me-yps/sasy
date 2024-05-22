@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"sasy/pkg/sasy"
+	"sasy/utils"
 )
 
 func main() {
@@ -24,6 +25,9 @@ func main() {
 		fmt.Println(sasy.Usage())
 		os.Exit(1)
 	}
+
+	// Init Functions
+	utils.Init()
 
 	if err := cmd(args[1:]); err != nil {
 		fmt.Fprintf(os.Stderr, "%s\n", err.Error())
