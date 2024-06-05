@@ -3,21 +3,22 @@ package model
 import (
 	"fmt"
 	"os"
-	"path"
 	"sasy/utils"
 )
 
 type Blob struct {
 	Path    string
 	Oid     string
+	Mode    string
 	Content string
 	Name    string
 }
 
-func CreateBlob(wd string, name string) *Blob {
+func CreateBlob(path string, file os.DirEntry) *Blob {
 	o := &Blob{}
-	o.Name = name
-	o.Path = path.Join(wd, name)
+	o.Name = file.Name()
+	o.Path = path
+	o.Mode = utils.GetFileMode(file)
 	o.setContent()
 	o.Oid = utils.CalculateSHA1(o.Content)
 	return o

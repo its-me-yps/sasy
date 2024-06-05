@@ -7,6 +7,7 @@ import (
 	"encoding/hex"
 	"io"
 	"io/fs"
+	"os"
 	"path/filepath"
 )
 
@@ -30,6 +31,17 @@ func Ls() ([]string, error) {
 	}
 
 	return list, nil
+}
+
+func GetFileMode(file os.DirEntry) string {
+	// This functions checks executable bit for user by taking bitwise & with 0100 (octal)
+	// Returns "10755" if executable else returns "100644"
+	info, _ := file.Info()
+	if info.Mode()&0100 != 0 {
+		return "100755"
+	} else {
+		return "100644"
+	}
 }
 
 // To compress using zlib compression technique
