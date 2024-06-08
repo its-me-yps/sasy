@@ -25,14 +25,19 @@ func CommitHandler(args []string) error {
 		return fmt.Errorf("error in creating database: %v", err)
 	}
 
-	blobEntries := []*model.Blob{}
-	if err := saveBlobsToDatabase(&blobEntries, database); err != nil {
+	rootTree, err := model.CreateTree(utils.WorkindDir)
+	if err != nil {
 		return err
 	}
 
-	tree := model.CreateTree(&blobEntries)
-	if err := database.Save(tree.Oid, []byte(tree.Content)); err != nil {
-		return fmt.Errorf("error saving tree %s in db: %v", tree.Oid, err)
+	// saving the root tree
+	if err := database.Save(rootTree.Oid, []byte(rootTree.Content)); err != nil {
+		return fmt.Errorf("error saving the root-tree %v", err)
+	}
+
+	// saving all entries(subtrees and blobs) of root-tree
+	if err := model.SaveObjectsToDatabase(rootTree.Entries, database); err != nil {
+		return err
 	}
 
 	author := model.NewAuthor()
@@ -44,7 +49,7 @@ func CommitHandler(args []string) error {
 		return fmt.Errorf("error in Reading refs: %v", err)
 	}
 
-	commit := model.CreateCommit(parent, tree.Oid, *author, commitMessage)
+	commit := model.CreateCommit(parent, rootTree.Oid, *author, commitMessage)
 
 	if err := database.Save(commit.Oid, []byte(commit.Content)); err != nil {
 		return fmt.Errorf("error saving commit %v", err)
@@ -63,22 +68,5 @@ func CommitHandler(args []string) error {
 
 	fmt.Printf("%s %s] ", commitStdout, commit.Oid)
 	fmt.Printf("%s\n", strings.Split(commitMessage, "\n")[0])
-	return nil
-}
-
-func saveBlobsToDatabase(blobEntries *[]*model.Blob, database *model.Database) error {
-	var files []string
-	var err error
-	if files, err = utils.Ls(); err != nil {
-		return fmt.Errorf("error reading files in directory: %v", err)
-	}
-	for _, file := range files {
-		blob := model.CreateBlob(utils.WorkindDir, file)
-
-		if err := database.Save(blob.Oid, []byte(blob.Content)); err != nil {
-			return fmt.Errorf("error saving blob %s in db: %v", blob.Name, err)
-		}
-		*blobEntries = append(*blobEntries, blob)
-	}
 	return nil
 }
