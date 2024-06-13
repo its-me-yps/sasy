@@ -3,6 +3,7 @@ package sasy
 var Commands = map[string]func([]string) error{
 	"init":   InitHandler,
 	"commit": CommitHandler,
+	"add": addHandler,
 }
 
 func Usage() string {
