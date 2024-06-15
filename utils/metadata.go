@@ -9,7 +9,7 @@ import (
 type Metadata struct {
 	Ctime time.Time
 	Mtime time.Time
-	Mode  uint16
+	Mode  uint32
 	Size  int64
 }
 
@@ -25,7 +25,7 @@ func MetadataToBytes(metadata Metadata) []byte {
 	buf.Write(mtimeBytes)
 
 	modeBytes := make([]byte, 4)
-	binary.LittleEndian.PutUint16(modeBytes, metadata.Mode)
+	binary.LittleEndian.PutUint32(modeBytes, metadata.Mode)
 	buf.Write(modeBytes)
 
 	sizeBytes := make([]byte, 8)
@@ -38,7 +38,7 @@ func MetadataToBytes(metadata Metadata) []byte {
 func BytesToMetadata(data []byte) (Metadata, error) {
 	var ctime int64
 	var mtime int64
-	var mode uint16
+	var mode uint32
 	var size int64
 
 	buf := bytes.NewReader(data)

@@ -17,7 +17,7 @@ func getUnixMetadata(fileInfo os.FileInfo) (Metadata, error) {
 	return Metadata{
 		Ctime: time.Unix(int64(stat.Ctim.Sec), int64(stat.Ctim.Nsec)),
 		Mtime: time.Unix(int64(stat.Mtim.Sec), int64(stat.Mtim.Nsec)),
-		Mode:  uint16(stat.Mode),
+		Mode:  uint32(stat.Mode),
 		Size:  stat.Size,
 	}, nil
 }
