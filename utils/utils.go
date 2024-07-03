@@ -5,6 +5,7 @@ import (
 	"compress/zlib"
 	"crypto/sha1"
 	"encoding/hex"
+	"errors"
 	"io"
 	"io/fs"
 	"os"
@@ -58,4 +59,9 @@ func CalculateSHA1(content string) string {
 	h := sha1.New()
 	io.WriteString(h, content)
 	return hex.EncodeToString(h.Sum(nil))
+}
+
+func CheckFileExists(filePath string) bool {
+	_, err := os.Stat(filePath)
+	return !errors.Is(err, os.ErrNotExist)
 }

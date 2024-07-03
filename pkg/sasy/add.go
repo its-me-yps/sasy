@@ -11,7 +11,7 @@ import (
 	"sort"
 )
 
-func addHandler(arg []string) error {
+func AddHandler(arg []string) error {
 	if len(arg) == 0 {
 		return fmt.Errorf("no file path passed as argument to add")
 	}
